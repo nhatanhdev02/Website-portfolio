@@ -1,0 +1,176 @@
+/* Pixel Art Portfolio Design System - Retro Gaming Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Pixel Art Color Palette - Light Mode */
+    --background: 48 20% 96%;
+    --foreground: 240 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
+    /* Retro Green - Primary Terminal Color */
+    --primary: 120 100% 50%;
+    --primary-foreground: 240 10% 8%;
+    --primary-glow: 120 100% 60%;
+
+    /* Electric Blue - Secondary Accent */
+    --secondary: 210 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Pixel Purple - Tertiary */
+    --tertiary: 270 100% 70%;
+    --tertiary-foreground: 0 0% 100%;
+
+    /* Retro Orange - Warning/Accent */
+    --warning: 30 100% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Muted Grays */
+    --muted: 220 13% 91%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 120 100% 50%;
+    --accent-foreground: 240 10% 8%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 85%;
+    --input: 220 13% 91%;
+    --ring: 120 100% 50%;
+
+    --radius: 0px; /* Sharp corners for pixel art */
+
+    /* Pixel Art Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(270 100% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)), hsl(220 13% 91%));
+
+    /* Shadows */
+    --shadow-pixel: 4px 4px 0px hsl(var(--primary) / 0.3);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.5);
+
+    /* Sidebar */
+    --sidebar-background: 220 13% 95%;
+    --sidebar-foreground: 240 10% 8%;
+    --sidebar-primary: 120 100% 50%;
+    --sidebar-primary-foreground: 240 10% 8%;
+    --sidebar-accent: 220 13% 91%;
+    --sidebar-accent-foreground: 240 10% 8%;
+    --sidebar-border: 220 13% 85%;
+    --sidebar-ring: 120 100% 50%;
+  }
+
+  .dark {
+    /* Pixel Art Color Palette - Dark Mode */
+    --background: 240 10% 8%;
+    --foreground: 120 100% 90%;
+
+    --card: 240 10% 12%;
+    --card-foreground: 120 100% 90%;
+
+    --popover: 240 10% 12%;
+    --popover-foreground: 120 100% 90%;
+
+    --primary: 120 100% 60%;
+    --primary-foreground: 240 10% 8%;
+    --primary-glow: 120 100% 70%;
+
+    --secondary: 210 100% 60%;
+    --secondary-foreground: 240 10% 8%;
+
+    --tertiary: 270 100% 75%;
+    --tertiary-foreground: 240 10% 8%;
+
+    --warning: 30 100% 60%;
+    --warning-foreground: 240 10% 8%;
+
+    --muted: 240 10% 16%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 120 100% 60%;
+    --accent-foreground: 240 10% 8%;
+
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 240 10% 8%;
+
+    --border: 240 10% 20%;
+    --input: 240 10% 16%;
+    --ring: 120 100% 60%;
+
+    /* Dark Mode Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(270 100% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)), hsl(240 10% 16%));
+
+    /* Dark Shadows */
+    --shadow-pixel: 4px 4px 0px hsl(var(--primary) / 0.4);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.3);
+
+    /* Dark Sidebar */
+    --sidebar-background: 240 10% 12%;
+    --sidebar-foreground: 120 100% 90%;
+    --sidebar-primary: 120 100% 60%;
+    --sidebar-primary-foreground: 240 10% 8%;
+    --sidebar-accent: 240 10% 16%;
+    --sidebar-accent-foreground: 120 100% 90%;
+    --sidebar-border: 240 10% 20%;
+    --sidebar-ring: 120 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Pixel Art Image Rendering */
+  .image-rendering-pixelated {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Smooth animations */
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 0;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-glow));
+  }
+
+  /* Pixel art selection */
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
+  }
+}

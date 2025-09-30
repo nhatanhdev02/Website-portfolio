@@ -1,0 +1,11 @@
+🔒 Có thể bổ sung thêm:
+
+Audit Log Table (ghi lại thay đổi dữ liệu quan trọng, không chỉ log file)
+
+Rate Limiting cho admin API (chống brute force)
+
+API Versioning (/api/v1/admin/...) để sau dễ mở rộng
+
+CI/CD Integration (GitHub Actions hoặc GitLab CI) để chạy test & deploy tự động
+
+OpenAPI/Swagger auto-gen từ request/response để support frontend team
