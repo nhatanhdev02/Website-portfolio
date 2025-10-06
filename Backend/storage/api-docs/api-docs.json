@@ -1,0 +1,1622 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Admin Backend API",
+        "description": "RESTful API for managing portfolio admin dashboard content with Clean Architecture implementation",
+        "contact": {
+            "name": "Nhật Anh Dev",
+            "email": "admin@nhatanh.dev"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/admin/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Admin login",
+                "description": "Authenticate admin user and return JWT/Sanctum token",
+                "operationId": "b8098605e389c86dcb60db12b1b4dfe2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|abcdef123456..."
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "username": {
+                                                            "type": "string",
+                                                            "example": "admin"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@example.com"
+                                                        },
+                                                        "last_login_at": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-01-01T12:00:00Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "username": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The username field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Admin logout",
+                "description": "Logout admin user and invalidate token",
+                "operationId": "59a49d30177042d9f58b1de69afbc903",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout successful"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh authentication token",
+                "description": "Refresh the current authentication token",
+                "operationId": "4249ce3452dfba5d45c0a39176b07c66",
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token refreshed successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "2|newtoken123456..."
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "username": {
+                                                            "type": "string",
+                                                            "example": "admin"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@example.com"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token refresh failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token refresh failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/auth/me": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get current authenticated admin user",
+                "description": "Retrieve current authenticated admin user information",
+                "operationId": "32d4c5e06f41a66aa79f29758662f1c1",
+                "responses": {
+                    "200": {
+                        "description": "User information retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "username": {
+                                                            "type": "string",
+                                                            "example": "admin"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@example.com"
+                                                        },
+                                                        "last_login_at": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-01-01T12:00:00Z"
+                                                        },
+                                                        "created_at": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-01-01T10:00:00Z"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-01-01T12:00:00Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/hero": {
+            "get": {
+                "tags": [
+                    "Hero Section"
+                ],
+                "summary": "Get hero section content",
+                "description": "Retrieve current hero section content in both Vietnamese and English",
+                "operationId": "290db80790dd1bb62da88d70c1626fd3",
+                "responses": {
+                    "200": {
+                        "description": "Hero content retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "greeting_vi": {
+                                                    "type": "string",
+                                                    "example": "Xin chào, tôi là"
+                                                },
+                                                "greeting_en": {
+                                                    "type": "string",
+                                                    "example": "Hello, I'm"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Nhật Anh"
+                                                },
+                                                "title_vi": {
+                                                    "type": "string",
+                                                    "example": "Lập trình viên Fullstack"
+                                                },
+                                                "title_en": {
+                                                    "type": "string",
+                                                    "example": "Fullstack Developer"
+                                                },
+                                                "subtitle_vi": {
+                                                    "type": "string",
+                                                    "example": "Chuyên về phát triển web hiện đại"
+                                                },
+                                                "subtitle_en": {
+                                                    "type": "string",
+                                                    "example": "Specialized in modern web development"
+                                                },
+                                                "cta_text_vi": {
+                                                    "type": "string",
+                                                    "example": "Xem dự án"
+                                                },
+                                                "cta_text_en": {
+                                                    "type": "string",
+                                                    "example": "View Projects"
+                                                },
+                                                "cta_link": {
+                                                    "type": "string",
+                                                    "example": "#projects"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Hero Section"
+                ],
+                "summary": "Update hero section content",
+                "description": "Update hero section content with bilingual support",
+                "operationId": "fa519bb3e4f39959ca7e515f4ff243a5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "greeting_vi",
+                                    "greeting_en",
+                                    "name",
+                                    "title_vi",
+                                    "title_en",
+                                    "subtitle_vi",
+                                    "subtitle_en",
+                                    "cta_text_vi",
+                                    "cta_text_en",
+                                    "cta_link"
+                                ],
+                                "properties": {
+                                    "greeting_vi": {
+                                        "type": "string",
+                                        "example": "Xin chào, tôi là"
+                                    },
+                                    "greeting_en": {
+                                        "type": "string",
+                                        "example": "Hello, I'm"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nhật Anh"
+                                    },
+                                    "title_vi": {
+                                        "type": "string",
+                                        "example": "Lập trình viên Fullstack"
+                                    },
+                                    "title_en": {
+                                        "type": "string",
+                                        "example": "Fullstack Developer"
+                                    },
+                                    "subtitle_vi": {
+                                        "type": "string",
+                                        "example": "Chuyên về phát triển web hiện đại"
+                                    },
+                                    "subtitle_en": {
+                                        "type": "string",
+                                        "example": "Specialized in modern web development"
+                                    },
+                                    "cta_text_vi": {
+                                        "type": "string",
+                                        "example": "Xem dự án"
+                                    },
+                                    "cta_text_en": {
+                                        "type": "string",
+                                        "example": "View Projects"
+                                    },
+                                    "cta_link": {
+                                        "type": "string",
+                                        "example": "#projects"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Hero content updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hero content updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "greeting_vi": {
+                                                    "type": "string",
+                                                    "example": "Xin chào, tôi là"
+                                                },
+                                                "greeting_en": {
+                                                    "type": "string",
+                                                    "example": "Hello, I'm"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Nhật Anh"
+                                                },
+                                                "title_vi": {
+                                                    "type": "string",
+                                                    "example": "Lập trình viên Fullstack"
+                                                },
+                                                "title_en": {
+                                                    "type": "string",
+                                                    "example": "Fullstack Developer"
+                                                },
+                                                "subtitle_vi": {
+                                                    "type": "string",
+                                                    "example": "Chuyên về phát triển web hiện đại"
+                                                },
+                                                "subtitle_en": {
+                                                    "type": "string",
+                                                    "example": "Specialized in modern web development"
+                                                },
+                                                "cta_text_vi": {
+                                                    "type": "string",
+                                                    "example": "Xem dự án"
+                                                },
+                                                "cta_text_en": {
+                                                    "type": "string",
+                                                    "example": "View Projects"
+                                                },
+                                                "cta_link": {
+                                                    "type": "string",
+                                                    "example": "#projects"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get all projects",
+                "description": "Retrieve paginated list of projects with filtering options",
+                "operationId": "c1725e676a2c746e33b7655c04753e65",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by project category",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "web"
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "description": "Filter by featured status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in project titles and descriptions",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Laravel"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "example": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Projects retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title_vi": {
+                                                                "type": "string",
+                                                                "example": "Ứng dụng E-commerce"
+                                                            },
+                                                            "title_en": {
+                                                                "type": "string",
+                                                                "example": "E-commerce Application"
+                                                            },
+                                                            "description_vi": {
+                                                                "type": "string",
+                                                                "example": "Ứng dụng thương mại điện tử hiện đại"
+                                                            },
+                                                            "description_en": {
+                                                                "type": "string",
+                                                                "example": "Modern e-commerce application"
+                                                            },
+                                                            "image": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/project1.jpg"
+                                                            },
+                                                            "link": {
+                                                                "type": "string",
+                                                                "example": "https://project1.com"
+                                                            },
+                                                            "technologies": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "example": "Laravel"
+                                                                }
+                                                            },
+                                                            "category": {
+                                                                "type": "string",
+                                                                "example": "web"
+                                                            },
+                                                            "featured": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "order": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/services": {
+            "get": {
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Get all services",
+                "description": "Retrieve paginated list of services ordered by position",
+                "operationId": "6e9001615f53283870c9b0eacb4df624",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "example": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Services retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title_vi": {
+                                                                "type": "string",
+                                                                "example": "Phát triển Web"
+                                                            },
+                                                            "title_en": {
+                                                                "type": "string",
+                                                                "example": "Web Development"
+                                                            },
+                                                            "description_vi": {
+                                                                "type": "string",
+                                                                "example": "Phát triển ứng dụng web hiện đại"
+                                                            },
+                                                            "description_en": {
+                                                                "type": "string",
+                                                                "example": "Modern web application development"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string",
+                                                                "example": "web-icon"
+                                                            },
+                                                            "color": {
+                                                                "type": "string",
+                                                                "example": "#FF6B6B"
+                                                            },
+                                                            "bg_color": {
+                                                                "type": "string",
+                                                                "example": "#FFE5E5"
+                                                            },
+                                                            "order": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Create a new service",
+                "description": "Create a new service with bilingual content",
+                "operationId": "ba7f8a1b03eae64b43a336b55ab05fe4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title_vi",
+                                    "title_en",
+                                    "description_vi",
+                                    "description_en",
+                                    "icon",
+                                    "color",
+                                    "bg_color"
+                                ],
+                                "properties": {
+                                    "title_vi": {
+                                        "type": "string",
+                                        "example": "Phát triển Web"
+                                    },
+                                    "title_en": {
+                                        "type": "string",
+                                        "example": "Web Development"
+                                    },
+                                    "description_vi": {
+                                        "type": "string",
+                                        "example": "Phát triển ứng dụng web hiện đại"
+                                    },
+                                    "description_en": {
+                                        "type": "string",
+                                        "example": "Modern web application development"
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "example": "web-icon"
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#FF6B6B"
+                                    },
+                                    "bg_color": {
+                                        "type": "string",
+                                        "example": "#FFE5E5"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Service created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Service created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title_vi": {
+                                                    "type": "string",
+                                                    "example": "Phát triển Web"
+                                                },
+                                                "title_en": {
+                                                    "type": "string",
+                                                    "example": "Web Development"
+                                                },
+                                                "description_vi": {
+                                                    "type": "string",
+                                                    "example": "Phát triển ứng dụng web hiện đại"
+                                                },
+                                                "description_en": {
+                                                    "type": "string",
+                                                    "example": "Modern web application development"
+                                                },
+                                                "icon": {
+                                                    "type": "string",
+                                                    "example": "web-icon"
+                                                },
+                                                "color": {
+                                                    "type": "string",
+                                                    "example": "#FF6B6B"
+                                                },
+                                                "bg_color": {
+                                                    "type": "string",
+                                                    "example": "#FFE5E5"
+                                                },
+                                                "order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "title_vi": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The Vietnamese title field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Error message"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UnauthorizedResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Unauthenticated"
+                    }
+                },
+                "type": "object"
+            },
+            "NotFoundResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Resource not found"
+                    }
+                },
+                "type": "object"
+            },
+            "SuccessResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationMeta": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 15
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUser": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "admin@example.com"
+                    },
+                    "last_login_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Hero": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "greeting_vi": {
+                        "type": "string",
+                        "example": "Xin chào, tôi là"
+                    },
+                    "greeting_en": {
+                        "type": "string",
+                        "example": "Hello, I'm"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Nhật Anh"
+                    },
+                    "title_vi": {
+                        "type": "string",
+                        "example": "Lập trình viên Fullstack"
+                    },
+                    "title_en": {
+                        "type": "string",
+                        "example": "Fullstack Developer"
+                    },
+                    "subtitle_vi": {
+                        "type": "string",
+                        "example": "Chuyên về phát triển web hiện đại"
+                    },
+                    "subtitle_en": {
+                        "type": "string",
+                        "example": "Specialized in modern web development"
+                    },
+                    "cta_text_vi": {
+                        "type": "string",
+                        "example": "Xem dự án"
+                    },
+                    "cta_text_en": {
+                        "type": "string",
+                        "example": "View Projects"
+                    },
+                    "cta_link": {
+                        "type": "string",
+                        "example": "#projects"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Service": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title_vi": {
+                        "type": "string",
+                        "example": "Phát triển Web"
+                    },
+                    "title_en": {
+                        "type": "string",
+                        "example": "Web Development"
+                    },
+                    "description_vi": {
+                        "type": "string",
+                        "example": "Phát triển ứng dụng web hiện đại"
+                    },
+                    "description_en": {
+                        "type": "string",
+                        "example": "Modern web application development"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "example": "web-icon"
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "#FF6B6B"
+                    },
+                    "bg_color": {
+                        "type": "string",
+                        "example": "#FFE5E5"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Project": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title_vi": {
+                        "type": "string",
+                        "example": "Ứng dụng E-commerce"
+                    },
+                    "title_en": {
+                        "type": "string",
+                        "example": "E-commerce Application"
+                    },
+                    "description_vi": {
+                        "type": "string",
+                        "example": "Ứng dụng thương mại điện tử hiện đại"
+                    },
+                    "description_en": {
+                        "type": "string",
+                        "example": "Modern e-commerce application"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/project1.jpg"
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "https://project1.com"
+                    },
+                    "technologies": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Laravel"
+                        }
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "web"
+                    },
+                    "featured": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "order": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "BlogPost": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title_vi": {
+                        "type": "string",
+                        "example": "Hướng dẫn Laravel"
+                    },
+                    "title_en": {
+                        "type": "string",
+                        "example": "Laravel Tutorial"
+                    },
+                    "content_vi": {
+                        "type": "string",
+                        "example": "Nội dung bài viết bằng tiếng Việt..."
+                    },
+                    "content_en": {
+                        "type": "string",
+                        "example": "Article content in English..."
+                    },
+                    "excerpt_vi": {
+                        "type": "string",
+                        "example": "Tóm tắt bài viết..."
+                    },
+                    "excerpt_en": {
+                        "type": "string",
+                        "example": "Article excerpt..."
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "example": "https://example.com/blog1.jpg"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ],
+                        "example": "published"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Laravel"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactMessage": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john@example.com"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Hello, I would like to discuss a project..."
+                    },
+                    "read_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Admin authentication endpoints"
+        },
+        {
+            "name": "Hero Section",
+            "description": "Hero section content management"
+        },
+        {
+            "name": "Services",
+            "description": "Services CRUD operations and ordering"
+        },
+        {
+            "name": "Projects",
+            "description": "Portfolio projects management with image handling"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}

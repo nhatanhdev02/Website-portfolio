@@ -60,7 +60,20 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_TIMEOUT => env('DB_POOL_ACQUIRE_TIMEOUT', 60),
+                PDO::ATTR_PERSISTENT => env('DB_POOL_PERSISTENT', false),
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'",
             ]) : [],
+            // Production connection pool settings
+            'pool' => [
+                'min_connections' => env('DB_POOL_MIN_CONNECTIONS', 5),
+                'max_connections' => env('DB_POOL_MAX_CONNECTIONS', 20),
+                'acquire_timeout' => env('DB_POOL_ACQUIRE_TIMEOUT', 60000),
+                'timeout' => env('DB_POOL_TIMEOUT', 30000),
+                'idle_timeout' => env('DB_POOL_IDLE_TIMEOUT', 300000),
+                'max_lifetime' => env('DB_POOL_MAX_LIFETIME', 1800000),
+            ],
         ],
 
         'mariadb' => [

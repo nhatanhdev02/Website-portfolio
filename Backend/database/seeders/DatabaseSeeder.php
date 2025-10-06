@@ -13,11 +13,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->command->info('Starting database seeding...');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Core seeders - always run
+        $this->call([
+            AdminSeeder::class,
+            ContentSeeder::class,
         ]);
+
+        // Test data seeder - only runs in local/testing environments
+        $this->call([
+            TestDataSeeder::class,
+        ]);
+
+        $this->command->info('Database seeding completed!');
     }
 }

@@ -1,0 +1,57 @@
+{
+  "name": "laravel-admin-backend-api-tests",
+  "version": "1.0.0",
+  "description": "Automated API testing suite for Laravel Admin Backend using Postman/Newman",
+  "main": "run-tests.js",
+  "scripts": {
+    "test": "node run-tests.js dev",
+    "test:dev": "node run-tests.js dev",
+    "test:prod": "node run-tests.js prod",
+    "test:auth": "node run-tests.js dev --folder=Authentication",
+    "test:hero": "node run-tests.js dev --folder=\"Hero Section\"",
+    "test:services": "node run-tests.js dev --folder=Services",
+    "test:projects": "node run-tests.js dev --folder=Projects",
+    "test:blog": "node run-tests.js dev --folder=\"Blog Posts\"",
+    "test:contact": "node run-tests.js dev --folder=\"Contact Management\"",
+    "test:settings": "node run-tests.js dev --folder=\"System Settings\"",
+    "test:verbose": "node run-tests.js dev --verbose",
+    "test:bail": "node run-tests.js dev --bail",
+    "test:health": "node run-tests.js dev --health-check",
+    "test:ci": "node run-tests.js dev --bail --verbose",
+    "install-deps": "npm install -g newman newman-reporter-html newman-reporter-htmlextra",
+    "clean-reports": "rm -rf reports/*",
+    "validate-collection": "newman run Laravel-Admin-Backend-API.postman_collection.json --dry-run",
+    "export-collection": "echo 'Collection exported to Laravel-Admin-Backend-API.postman_collection.json'",
+    "setup": "npm run install-deps && mkdir -p reports"
+  },
+  "keywords": [
+    "api",
+    "testing",
+    "postman",
+    "newman",
+    "laravel",
+    "backend",
+    "automation"
+  ],
+  "author": "Nhật Anh Dev",
+  "license": "MIT",
+  "dependencies": {
+    "newman": "^6.0.0"
+  },
+  "devDependencies": {
+    "newman-reporter-html": "^1.0.5",
+    "newman-reporter-htmlextra": "^1.23.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhatanh/laravel-admin-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nhatanh/laravel-admin-backend/issues"
+  },
+  "homepage": "https://github.com/nhatanh/laravel-admin-backend#readme"
+}
